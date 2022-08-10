@@ -3,9 +3,9 @@
  *
  **/
 
-#ifndef _MATRIX_MULTIPLY_H
+#ifndef _MATRIX_MULTIPLY_HPP
 
-#define _MATRIX_MULTIPLY_H
+#define _MATRIX_MULTIPLY_HPP
 
 #include <sys/types.h>
 #include <sys/stat.h>
