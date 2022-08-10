@@ -42,4 +42,7 @@ int main()
     time2 = elapsed_seconds();
     elapsed = time2 - time1;
     printf("Serial: Time for multiplying %ix%i and %ix%i matrices is:    %.2f sec\n", Anc, Anr, Bnc, Bnr, elapsed);
+    free_matrix(A);
+    free_matrix(B);
+    free_matrix(C);
 }
