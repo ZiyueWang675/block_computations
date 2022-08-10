@@ -1,14 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
-#include <fcntl.h>
 #include <math.h>
 #include <assert.h>
 
-#include "matrix_multiply.hpp"
+#include "matrix.hpp"
 
 /*
  * Allocates a rows-by-cols matrix and returns it
@@ -46,4 +42,17 @@ void print_matrix(matrix_t *m)
     printf("\n");
   }
   printf("------------\n");
+}
+
+int serial_matrix_multiply(matrix_t *A, matrix_t *B, matrix_t *C)
+{
+  int i, j, k;
+  for (i = 0; i < A->rows; i++) {
+    for (k = 0; k < A->cols; k++) {
+      for (j = 0; j < B->cols; j++) {
+        element(C,i,j) += element(A,i,k) * element(B,k,j);
+      }
+    }
+  }
+  return 0;
 }
