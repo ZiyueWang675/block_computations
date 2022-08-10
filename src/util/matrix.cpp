@@ -8,7 +8,7 @@
 #include <math.h>
 #include <assert.h>
 
-#include "matrix_multiply.h"
+#include "matrix_multiply.hpp"
 
 /*
  * Allocates a rows-by-cols matrix and returns it
