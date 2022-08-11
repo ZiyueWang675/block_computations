@@ -28,6 +28,8 @@ int main(int argc, char* argv[])
 {
     if (argc != 3) Usage(argv[0]); 
     Get_args(argv, &dimension, &thread_count);
+    matrix_A = make_matrix(dimension,dimension);
+    matrix_B = make_matrix(dimension,dimension);
     readMatrix(dimension, matrix_A, matrix_B);
     print_matrix(matrix_A);
 }
@@ -41,8 +43,7 @@ void Usage(char prog_name[])
 
 void readMatrix(int dimension, matrix_t* matrix_A, matrix_t* matrix_B)
 {
-    matrix_A = make_matrix(dimension,dimension);
-    matrix_B = make_matrix(dimension,dimension);
+    
     string dim = to_string(dimension);
     string filename = "matrix"+ dim + "x"+ dim + ".txt";
     printf("%s\n", filename.c_str());
