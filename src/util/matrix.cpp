@@ -11,7 +11,7 @@
  */
 matrix_t *make_matrix(int rows, int cols)
 {
-  matrix_t *new_matrix = malloc(sizeof(matrix_t));
+  matrix_t *new_matrix = (matrix_t *)malloc(sizeof(matrix_t));
   new_matrix->rows = rows;
   new_matrix->cols = cols;
   new_matrix->colstride = rows;
