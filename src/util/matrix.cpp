@@ -16,7 +16,11 @@
  */
 matrix_t *make_matrix(int rows, int cols)
 {
+<<<<<<< Updated upstream
   matrix_t *new_matrix = (matrix_t*) malloc(sizeof(matrix_t));
+=======
+  matrix_t *new_matrix = (matrix_t *) malloc(sizeof(matrix_t));
+>>>>>>> Stashed changes
   new_matrix->rows = rows;
   new_matrix->cols = cols;
   new_matrix->colstride = rows;

@@ -2,6 +2,7 @@ import random
 import argparse
 import numpy as np
 
+<<<<<<< Updated upstream
 def matrix_generator(matrix_A, matrix_B):
     for i in range(len(matrix_A)):
         filename = 'matrixA_'+ str(matrix_A[i][0]) + 'x'+ str(matrix_A[i][1]) + '.txt'
@@ -20,6 +21,20 @@ def matrix_generator(matrix_A, matrix_B):
                 for k in range(int(matrix_B[i][1])):
                     f.write(str(random.randint(0, 1000))+" ")
                 f.write("\n")
+=======
+def matrix_generator(matrices):
+    index = ['A','B']
+    for i in range(len(matrices)):
+        filename = str(matrices[i]) + 'x'+ str(matrices[i]) + '.txt'
+        with open('data/matrix'+filename, 'w') as f:
+            for counter in range(2):
+                    f.write(index[counter] +":"+"\n")
+                    for j in range(int(matrices[i])):
+                        for k in range(int(matrices[i])):
+                            f.write(str(random.randint(0, 1000))+" ")
+                        f.write("\n")
+                    f.write("\n")
+>>>>>>> Stashed changes
     f.close()
 
 
