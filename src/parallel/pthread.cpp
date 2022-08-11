@@ -41,9 +41,12 @@ void Usage(char prog_name[])
 
 void readMatrix(int dimension, matrix_t* matrix_A, matrix_t* matrix_B)
 {
+    matrix_A = make_matrix(dimension,dimension);
+    matrix_B = make_matrix(dimension,dimension);
     string dim = to_string(dimension);
     string filename = "matrix"+ dim + "x"+ dim + ".txt";
-    load_matrix(filename, matrix_A, matrix_B);
+    printf("%s\n", filename.c_str());
+    load_matrix(filename, dimension,  matrix_A, matrix_B);
 }
 
 void Get_args(char* argv[], int* dimension, int* thread_count)
