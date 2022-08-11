@@ -1,11 +1,16 @@
 import random
 import argparse
 import numpy as np
+import os
 
 def matrix_generator(matrix_A, matrix_B):
+    parent_dir = os.getcwd() + '/../data'
     for i in range(len(matrix_A)):
+        directory = 'matrices'+ str(i)
+        path = os.path.join(parent_dir, directory)
+        os.mkdir(path)
         filename = 'matrixA_'+ str(matrix_A[i][0]) + 'x'+ str(matrix_A[i][1]) + '.txt'
-        with open('../matrixA/'+filename, 'w') as f:
+        with open('../data/matrices'+ str(i) +'/'+filename, 'w') as f:
             f.write(str(matrix_A[i][0])+"x"+ str(matrix_A[i][1]) + " matrix:\n")
             for j in range(int(matrix_A[i][0])):
                 for k in range(int(matrix_A[i][1])):
@@ -14,7 +19,7 @@ def matrix_generator(matrix_A, matrix_B):
     f.close()
     for i in range(len(matrix_B)):
         filename = 'matrixB_'+str(matrix_B[i][0]) + 'x'+ str(matrix_B[i][1]) + '.txt'
-        with open('../matrixB/'+filename, 'w') as f:
+        with open('../data/matrices'+ str(i) +'/'+filename, 'w') as f:
             f.write(str(matrix_B[i][0])+"x"+ str(matrix_B[i][1]) + " matrix:\n")
             for j in range(int(matrix_B[i][0])):
                 for k in range(int(matrix_B[i][1])):
