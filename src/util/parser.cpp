@@ -8,6 +8,7 @@ matrix_t* load_matrix(string name_of_file){
     matrix_t *my_matrix_A;
     my_matrix_A = make_matrix(2, 2);
     string raw = "/../../matrixA/";
+    raw = raw + name_of_file;
     ifstream input_file ("/../../matrixA/");
     string line;
     getline(input_file, line);
