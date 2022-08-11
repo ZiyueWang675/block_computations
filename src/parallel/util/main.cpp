@@ -14,18 +14,7 @@ int main(){
     string matrix_name = "matrix256x256.txt";
 
     //get size of matrix
-    string num; 
-    for (int i = 6; i < matrix_name.length(); i++){
-        if(isdigit(matrix_name[i])){
-            num = num + matrix_name[i];
-        }else{
-            break;
-        }
-    }
-    int size = stoi(num);
-
-    my_matrix_A = make_matrix(size,size);
-    my_matrix_B = make_matrix(size,size);
+    
 
     load_matrix(matrix_name, my_matrix_A,my_matrix_B);
     //matrix_t *my_matrix_A;

@@ -1,11 +1,24 @@
-#include <iostream>
-#include <fstream>
 #include "parser.hpp"
+
 
 using namespace std;
 
 void load_matrix(string name_of_file, matrix_t* matrix_A, matrix_t* matrix_B){
     
+
+    string num; 
+    for (long unsigned int i = 6; i < name_of_file.length(); i++){
+        if(isdigit(name_of_file[i])){
+            num = num + name_of_file[i];
+        }else{
+            break;
+        }
+    }
+    int size = stoi(num);
+
+    matrix_A = make_matrix(size,size);
+    matrix_B = make_matrix(size,size);
+
     string raw = "../data/";
     raw = raw + name_of_file;
     ifstream input_file (raw);
@@ -16,17 +29,6 @@ void load_matrix(string name_of_file, matrix_t* matrix_A, matrix_t* matrix_B){
              << name_of_file << "'" << endl;
         exit(1);
     }
-    
-    //get size of matrix
-    string num; 
-    for (int i = 6; i < name_of_file.length(); i++){
-        if(isdigit(name_of_file[i])){
-            num = num + name_of_file[i];
-        }else{
-            break;
-        }
-    }
-    int size = stoi(num);
     
 
     //first we get the label of matrix A
