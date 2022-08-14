@@ -20,4 +20,4 @@ Virtualization type:             full
 L1d cache:                       480 KiB
 L1i cache:                       320 KiB
 L2 cache:                        12.5 MiB
-L3 cache:                        25 MiB
+L3 cache:                        25 MiB 
