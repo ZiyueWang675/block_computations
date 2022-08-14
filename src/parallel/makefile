@@ -3,8 +3,11 @@
 SHELL = /bin/sh 
     
 CXX=g++ 
+MPIC = mpic++
 PTHREAD := -g -pthread -Wall -std=c++11 -o pthread 
 FOX := mpiCC -g -Wall -std=c++11 -o mpi_fox
+OPENMP :=  -g -Wall -fopenmp 
+MPI := -g -Wall 
 LIBS    :=-lm 
     
 OBJS = util/matrix.cpp util/parser.cpp
@@ -17,10 +20,10 @@ pthread:
 	$(CXX) $(PTHREAD) pthread.cpp $(OBJS) $(LIBS)
 
 omp: 
-	$(CXX) $(PTHREAD) -o omp omp.cpp $(OBJS) $(LIBS)
+	$(CXX) $(OPENMP) -o omp omp.cpp $(OBJS) $(LIBS)
 
 mpi: 
-	$(CXX) $(PTHREAD) -o mpi mpi.cpp $(OBJS) $(LIBS)
+	$(MPIC) $(MPI) -o mpi mpi.cpp $(OBJS) $(LIBS)
 
 mpi_fox: 
 	$(FOX) mpi_fox.cpp $(OBJS) $(LIBS)
