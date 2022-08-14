@@ -48,6 +48,7 @@ typedef struct {
 matrix_t * make_matrix(int rows, int cols);
 void free_matrix(matrix_t *m);
 void print_matrix(matrix_t *m);
+void set_zero(matrix_t *m);
 double elapsed_seconds();
 int serial_matrix_multiply(matrix_t *A, matrix_t *B, matrix_t *C);
 
