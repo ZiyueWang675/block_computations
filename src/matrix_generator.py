@@ -17,7 +17,7 @@ def matrix_generator(matrices):
 
 
 if __name__ == "__main__":
-    matrices = [4,16,64,256,1024,2048, 4096]
+    matrices = [4,16,64,256,1024,2048]
     parser = argparse.ArgumentParser()
     parser.add_argument('-n','--newDimension', default=None, type = int, help='Add two new matrices with dimension defined by yourself', required=False)
     parser.add_argument('-s','--singleMatrix', action='store_true', default=False, help='Generate only one matrix, must be used with --newDimension', required=False)
