@@ -15,10 +15,6 @@ int block, block_dim;
 int processors, sqrt_processors, my_rank;
 int row, col;
 
-int getPosition(
-        int row              /* in  */,
-        int col              /* in  */);
-
 void Get_args(
         char*   argv[]       /* in  */,
         int*    dimension    /* out */);
