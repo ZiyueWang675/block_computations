@@ -44,6 +44,17 @@ void print_matrix(matrix_t *m)
   printf("------------\n");
 }
 
+void set_zero(matrix_t *m)
+{
+  int i, j;
+  for (i = 0; i < m->rows; i++) {
+    for (j = 0; j < m->cols; j++) {
+      element(m,i,j) = 0;
+    }
+  }
+  
+}
+
 int serial_matrix_multiply(matrix_t *A, matrix_t *B, matrix_t *C)
 {
   int i, j, k;

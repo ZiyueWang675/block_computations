@@ -1,0 +1,23 @@
+Architecture:                    x86_64
+CPU op-mode(s):                  32-bit, 64-bit
+Byte Order:                      Little Endian
+Address sizes:                   39 bits physical, 48 bits virtual
+CPU(s):                          20
+On-line CPU(s) list:             0-19
+Thread(s) per core:              2
+Core(s) per socket:              10
+Socket(s):                       1
+Vendor ID:                       GenuineIntel
+CPU family:                      6
+Model:                           151
+Model name:                      12th Gen Intel(R) Core(TM) i7-12700KF
+Stepping:                        2
+CPU MHz:                         3609.599
+BogoMIPS:                        7219.19
+Virtualization:                  VT-x
+Hypervisor vendor:               Microsoft
+Virtualization type:             full
+L1d cache:                       480 KiB
+L1i cache:                       320 KiB
+L2 cache:                        12.5 MiB
+L3 cache:                        25 MiB

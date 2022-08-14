@@ -46,17 +46,23 @@ int main(int argc, char* argv[])
     matrix_B = make_matrix(dimension,dimension);
     matrix_C = make_matrix(dimension,dimension);
     
+    gettimeofday(&start, NULL);
     readMatrix(dimension, matrix_A, matrix_B);
+    // gettimeofday(&end, NULL);
+    // time = (end.tv_sec - start.tv_sec)+(double)(end.tv_usec - start.tv_usec)/1000000.0;
+    // printf("Time cost for reading matrices is %.2f\n", time);
+
+    // gettimeofday(&start, NULL);
 
     //This section is for comparison purpose, you can ignore it if you want
-    matrix_t* matrix_D;
-    matrix_D = make_matrix(dimension,dimension);
-    gettimeofday(&start, NULL);
-    serial_matrix_multiply(matrix_A, matrix_B, matrix_D);
-    gettimeofday(&end, NULL);
-    time = (end.tv_sec - start.tv_sec)+(double)(end.tv_usec - start.tv_usec)/1000000.0;
-    printf("Time cost for serial program is %.2f\n", time);
-    free_matrix(matrix_D);
+    // matrix_t* matrix_D;
+    // matrix_D = make_matrix(dimension,dimension);
+    // gettimeofday(&start, NULL);
+    // serial_matrix_multiply(matrix_A, matrix_B, matrix_D);
+    // gettimeofday(&end, NULL);
+    // time = (end.tv_sec - start.tv_sec)+(double)(end.tv_usec - start.tv_usec)/1000000.0;
+    // printf("Time cost for serial program is %.2f\n", time);
+    // free_matrix(matrix_D);
 
     gettimeofday(&start, NULL);
 
@@ -74,7 +80,6 @@ int main(int argc, char* argv[])
 
     time = (end.tv_sec - start.tv_sec)+(double)(end.tv_usec - start.tv_usec)/1000000.0;
     printf("Time cost for pthread program is %.2f\n", time);
-
     free(threads);
     free_matrix(matrix_A);
     free_matrix(matrix_B);
@@ -108,8 +113,10 @@ void* thread_work(void* rank)
     int my_rank = (int)(intptr_t) rank;
     int local_stripes = 1;
     int row_number = 0;
+    //int tasks_per_thread = 1;
 
     local_stripes = (my_rank!=thread_count-1) ? (dimension/thread_count) : (dimension-(dimension/thread_count)*(thread_count - 1));
+    //tasks_per_thread = (my_rank!=thread_count-1) ? (dimension*dimension/thread_count) : (dimension*dimension-(dimension*dimension/thread_count)*(thread_count - 1));
 
     //Threads start to work!
     for(int i = 0; i < local_stripes; i++)
