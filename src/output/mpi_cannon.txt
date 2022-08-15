@@ -1,0 +1,10 @@
+MPI Cannon Program: 
+Time cost is 0.00001 for 4 processors and 4 dimension
+Time cost is 0.00003 for 4 processors and 16 dimension
+Time cost is 0.00005 for 4 processors and 32 dimension
+Time cost is 0.00025 for 4 processors and 64 dimension
+Time cost is 0.00139 for 4 processors and 128 dimension
+Time cost is 0.01032 for 4 processors and 256 dimension
+Time cost is 0.10006 for 4 processors and 512 dimension
+Time cost is 0.96937 for 4 processors and 1024 dimension
+Time cost is 12.46891 for 4 processors and 2048 dimension
