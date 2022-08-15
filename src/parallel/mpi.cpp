@@ -44,6 +44,7 @@ int main(int argc, char* argv[])
     /* Get the number of processes */
     int my_size;
     MPI_Comm_size(MPI_COMM_WORLD, &my_size); 
+
     /* Get my rank among all the processes */
     int my_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); 
@@ -81,11 +82,11 @@ int main(int argc, char* argv[])
             col_num = 0;
         }
     }
-
-        // for other processes, send their result of matrix C to process 0
+    
+    // for other processes, send their result of matrix C to process 0
     if (my_rank != 0){
         MPI_Send(my_result, size_tmp, MPI_INT, 0, 0, MPI_COMM_WORLD);    
- 
+        
     }
 
     //insert the value from other porcess to process 0
@@ -94,9 +95,10 @@ int main(int argc, char* argv[])
         for (int b = 1; b < my_size-1; b+=1){
             MPI_Recv(my_result, size_tmp, MPI_INT, b, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-
+            
             int col_temp = 0;
             for (int i = 0; i < size_tmp; i++){
+                //cout << "batman" << endl;
                 element(matrix_C,a,col_temp) = my_result[i];
                 col_temp += 1;
                 if(col_temp == dimension){
@@ -109,7 +111,8 @@ int main(int argc, char* argv[])
         size_tmp = (dimension - (dimension / my_size) * (my_size - 1))* dimension;
         int my_local_result[size_tmp];
         MPI_Recv(my_local_result, size_tmp, MPI_INT, my_size-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        
+
+
         int col_temp = 0;
         for (int i = 0; i < size_tmp; i++){
             element(matrix_C,a,col_temp) = my_local_result[i];
