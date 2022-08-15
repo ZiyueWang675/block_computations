@@ -107,11 +107,12 @@ int main(int argc, char* argv[])
         }
 
         size_tmp = (dimension - (dimension / my_size) * (my_size - 1))* dimension;
-        MPI_Recv(my_result, size_tmp, MPI_INT, my_size-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        int my_local_result[size_tmp];
+        MPI_Recv(my_local_result, size_tmp, MPI_INT, my_size-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         
         int col_temp = 0;
         for (int i = 0; i < size_tmp; i++){
-            element(matrix_C,a,col_temp) = my_result[i];
+            element(matrix_C,a,col_temp) = my_local_result[i];
             col_temp += 1;
             if(col_temp == dimension){
                 a += 1;
