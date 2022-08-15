@@ -11,8 +11,8 @@ using namespace std;
 
 matrix_t *matrixC;
 double *local_A, * local_B, *local_C, *tempA, *tempB;
-struct timeval t1, t2;
 int dimension;
+struct timeval t1, t2;
 int block, block_dim;
 int processors, sqrt_processors, my_rank;
 int row, col;
@@ -26,7 +26,7 @@ void copy(
         double*   y       /* in  */,
 		int       size    /* in  */);
 
-void fox();
+void cannon();
 
 void readMatrix();
 
@@ -81,7 +81,9 @@ int main(int argc, char* argv[])
     }
 
 	readMatrix();
-	fox();
+
+    //The only difference between Fox Algorithm
+	cannon();
 
 	if (my_rank == 0)
 	{
@@ -102,7 +104,7 @@ int main(int argc, char* argv[])
 				    element(matrixC,j,k) = local_C[(j - row_start) * block + k - col_start];
 	    }
 		float end = MPI_Wtime();
-		float read_time = (t2.tv_sec - t1.tv_sec)+(double)(t2.tv_usec - t1.tv_usec)/1000000.0;
+        float read_time = (t2.tv_sec - t1.tv_sec)+(double)(t1.tv_usec - t2.tv_usec)/1000000.0;
 		printf("Time cost is %.5f for %i processors and %i dimension\n", end-start-read_time, processors, dimension);
 	}
 	else
@@ -132,6 +134,7 @@ void copy(double* x, double* y, int size)
 
 void readMatrix()
 {
+    MPI_Status status;
     if (my_rank == 0)
 	{
         int index;
@@ -139,12 +142,13 @@ void readMatrix()
         matrix_t *matrixA, *matrixB;
         matrixA = make_matrix(dimension, dimension);
 	    matrixB = make_matrix(dimension, dimension);
+
 		gettimeofday(&t1, NULL);
 		string dim = to_string(dimension);
         string filename = "matrix"+ dim + "x"+ dim + ".txt";
         load_matrix(filename, dimension,  matrixA, matrixB);
 		gettimeofday(&t2, NULL);
-
+		
 	    for (int i = 0; i < processors; i++)
 	    {
 		    row_start = (i / sqrt_processors) * block;
@@ -184,47 +188,34 @@ void readMatrix()
 	}
 	else
 	{
-		MPI_Status status;
 		MPI_Recv(local_A, block_dim, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD, &status);
 		MPI_Recv(local_B, block_dim, MPI_DOUBLE, 0, 2, MPI_COMM_WORLD, &status);
 	}
-    
 }
 
-void fox()
+void cannon()
 {
     MPI_Status status;
-	int local_col = row;
-	int pos_start, pos_end;
+
+    //initial send
+    MPI_Sendrecv(local_A, block_dim, MPI_DOUBLE, getPosition(row, col - row), 1, tempA, block_dim, MPI_DOUBLE, getPosition(row, col + row), 1, MPI_COMM_WORLD, &status);
+	MPI_Sendrecv(local_B, block_dim, MPI_DOUBLE, getPosition(row - col, col), 2, tempB, block_dim, MPI_DOUBLE, getPosition(row + col, col), 2, MPI_COMM_WORLD, &status);
+	copy(local_A, tempA, block_dim);
+	copy(local_B, tempB, block_dim);
+
 	for (int stage = 0; stage < sqrt_processors; stage++)
 	{
-		if (col == local_col)
-		{
-			pos_start = getPosition(row, 0);
-			pos_end =   getPosition(row, sqrt_processors - 1);
-			for (int i = pos_start; i <= pos_end; i++)
-			{
-				if (i == my_rank)
-					continue;
-				MPI_Send(local_A, block_dim, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
-			}
-			copy(tempA, local_A, block_dim);
-		}
-		else
-		{
-			MPI_Recv(tempA, block_dim, MPI_DOUBLE, getPosition(row, local_col), 1, MPI_COMM_WORLD, &status);
-		}
-		local_col = (local_col + 1) % sqrt_processors;
-
 		for (int i = 0; i < block; i++)
 		{
 			for (int j = 0; j < block; j++)
 			{
 				for (int k = 0; k < block; k++)
-					local_C[i * block + j] += tempA[i * block + k] * local_B[k * block + j];
+					local_C[i * block + j] += local_A[i * block + k] * local_B[k * block + j];
 			}
 		}
+		MPI_Sendrecv(local_A, block_dim, MPI_DOUBLE, getPosition(row, col - 1), 1, tempA, block_dim, MPI_DOUBLE, getPosition(row, col + 1), 1, MPI_COMM_WORLD, &status);
 		MPI_Sendrecv(local_B, block_dim, MPI_DOUBLE, getPosition(row - 1, col), 2, tempB, block_dim, MPI_DOUBLE, getPosition(row + 1, col), 2, MPI_COMM_WORLD, &status);
+		copy(local_A, tempA, block_dim);
 		copy(local_B, tempB, block_dim);
 	}
 }

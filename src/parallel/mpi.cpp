@@ -14,6 +14,7 @@ matrix_t* matrix_A;
 matrix_t* matrix_B;
 matrix_t* matrix_C;
 
+
 void Usage(char prog_name[]);
 
 void readMatrix(
@@ -31,13 +32,13 @@ int main(int argc, char* argv[])
     Get_args(argv, &dimension);
     matrix_A = make_matrix(dimension,dimension);
     matrix_B = make_matrix(dimension,dimension);
-    matrix_C = make_matrix(dimension,dimension);
-    readMatrix(dimension, matrix_A, matrix_B); 
-    
+    matrix_C = make_matrix(dimension,dimension); 
+    readMatrix(dimension, matrix_A, matrix_B);
+    set_zero(matrix_C);
     //for timer
     struct timeval t1, t2;
     gettimeofday(&t1, NULL);
-
+    
     /* Start up MPI */
     MPI_Init(NULL, NULL);
     /* Get the number of processes */
@@ -93,9 +94,6 @@ int main(int argc, char* argv[])
         for (int b = 1; b < my_size-1; b+=1){
             MPI_Recv(my_result, size_tmp, MPI_INT, b, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-            for (int i = 0; i < size_tmp; i++){
-                cout << my_result[i] << endl;
-            }
 
             int col_temp = 0;
             for (int i = 0; i < size_tmp; i++){
@@ -129,7 +127,7 @@ int main(int argc, char* argv[])
     double time_spend = (t2.tv_sec - t1.tv_sec)+(double)(t2.tv_usec - t1.tv_usec)/1000000.0;
     if(my_rank==0){
         print_matrix(matrix_C);
-        printf("Time needed is %f\n", time_spend);
+        printf("Time cost is %.5f for %i processors and %i dimension\n", time_spend, my_size, dimension);
     }
     
 
@@ -149,7 +147,6 @@ void readMatrix(int dimension, matrix_t* matrix_A, matrix_t* matrix_B)
 {
     string dim = to_string(dimension);
     string filename = "matrix"+ dim + "x"+ dim + ".txt";
-    printf("%s\n", filename.c_str());
     load_matrix(filename, dimension,  matrix_A, matrix_B);
 }
 

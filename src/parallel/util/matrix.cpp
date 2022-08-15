@@ -67,3 +67,21 @@ int serial_matrix_multiply(matrix_t *A, matrix_t *B, matrix_t *C)
   }
   return 0;
 }
+
+bool compare_matrices(matrix_t *A, matrix_t *B)
+{
+  if(A->rows != B->rows || A->cols != B->cols)
+  {
+    printf("matrices dimension does not match!\n");
+    exit(1);
+  }
+  for(int i = 0; i < A->rows; i++)
+    for(int j = 0; j < A->cols; j++)
+    {
+      if(element(A, i, j) != element(B, i, j))
+      {
+        return false;
+      }
+    }
+  return true;
+}

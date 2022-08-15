@@ -39,26 +39,9 @@ int main(int argc, char* argv[])
     //for timer
     struct timeval t1, t2;
 
-    //The array arragement allocate the column for each thread to work on
-    // int thread_size = dimension / thread_count;
-    // int remain = dimension - thread_count * thread_size;
-    // int arrangement_thread[thread_count];
-    // int prev = 0;
-    // for (int i = 0; i < thread_count; i++){
-    //     if(remain>0){
-    //         remain -= 1;
-    //         arrangement_thread[i] = thread_size + 1 + prev;
-    //         prev += thread_size + 1;
-    //     }else{
-    //         arrangement_thread[i] = thread_size + prev;
-    //         prev += thread_size ;
-    //     }
-    // }
-    // for (int i = 0; i < thread_count; i++){
-    //     cout << arrangement_thread[i] << endl;
-    // }
-
     gettimeofday(&t1, NULL);
+   
+
     #   pragma omp parallel num_threads(thread_count) 
     {
         int my_rank = omp_get_thread_num();
@@ -76,27 +59,11 @@ int main(int argc, char* argv[])
                 }
             }
         }       
-        
-        //int start = 0;
-        // if(my_rank != 0){
-        //     start = arrangement_thread[my_rank - 1];
-        // }
-        // for (int count = 0; count < thread_count; count ++){
-        //     for (int i = start; i < arrangement_thread[my_rank]; i++)
-        //     {
-        //         for (int j = 0; j < dimension; j++)
-        //         {
-        //             element(matrix_C, i, i) += element(matrix_A, i, j) * element(matrix_B, j, i);
-        //         }
-        //     }
-        // }
     }
     gettimeofday(&t2, NULL);
     double time_spend = (t2.tv_sec - t1.tv_sec)+(double)(t2.tv_usec - t1.tv_usec)/1000000.0;
-    printf("Time needed is %f\n", time_spend);
+    printf("Time cost is %.5f for %i threads and %i dimension\n", time_spend, thread_count, dimension);
     
-    //print_matrix(matrix_A);
-    print_matrix(matrix_C);
     return 0;
 }
 
@@ -112,7 +79,6 @@ void readMatrix(int dimension, matrix_t* matrix_A, matrix_t* matrix_B)
     
     string dim = to_string(dimension);
     string filename = "matrix"+ dim + "x"+ dim + ".txt";
-    printf("%s\n", filename.c_str());
     load_matrix(filename, dimension,  matrix_A, matrix_B);
 }
 

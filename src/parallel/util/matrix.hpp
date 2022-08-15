@@ -46,10 +46,10 @@ typedef struct {
 #define element(X,i,j) (X)->values[(i) + (j)*(X)->colstride]
 
 matrix_t * make_matrix(int rows, int cols);
+bool compare_matrices(matrix_t *A, matrix_t *B);
 void free_matrix(matrix_t *m);
 void print_matrix(matrix_t *m);
 void set_zero(matrix_t *m);
-double elapsed_seconds();
 int serial_matrix_multiply(matrix_t *A, matrix_t *B, matrix_t *C);
 
 #endif // _MATRIX_H

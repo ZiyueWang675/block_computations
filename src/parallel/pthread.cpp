@@ -45,8 +45,6 @@ int main(int argc, char* argv[])
     matrix_A = make_matrix(dimension,dimension);
     matrix_B = make_matrix(dimension,dimension);
     matrix_C = make_matrix(dimension,dimension);
-    
-    gettimeofday(&start, NULL);
     readMatrix(dimension, matrix_A, matrix_B);
     // gettimeofday(&end, NULL);
     // time = (end.tv_sec - start.tv_sec)+(double)(end.tv_usec - start.tv_usec)/1000000.0;
@@ -79,7 +77,7 @@ int main(int argc, char* argv[])
     gettimeofday(&end, NULL);
 
     time = (end.tv_sec - start.tv_sec)+(double)(end.tv_usec - start.tv_usec)/1000000.0;
-    printf("Time cost for pthread program is %.2f\n", time);
+    printf("Time cost is %.5f for %i threads and %i dimension\n", time, thread_count, dimension);
     free(threads);
     free_matrix(matrix_A);
     free_matrix(matrix_B);
