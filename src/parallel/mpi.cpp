@@ -130,7 +130,9 @@ int main(int argc, char* argv[])
         printf("Time cost is %.5f for %i processors and %i dimension\n", time_spend, my_size, dimension);
     }
     
-
+    free_matrix(matrix_A);
+    free_matrix(matrix_B);
+    free_matrix(matrix_C);
     /* Shut down MPI */
     MPI_Finalize();
     return 0;
