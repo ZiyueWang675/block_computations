@@ -26,3 +26,6 @@ Time cost is 0.36869 for 8 processors and 1024 dimension
 Time cost is 7.71620 for 2 processors and 2048 dimension
 Time cost is 4.78534 for 4 processors and 2048 dimension
 Time cost is 2.74004 for 8 processors and 2048 dimension
+Time cost is 88.77707 for 2 processors and 4096 dimension
+Time cost is 51.24997 for 4 processors and 4096 dimension
+Time cost is 34.45803 for 8 processors and 4096 dimension
