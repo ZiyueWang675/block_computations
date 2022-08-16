@@ -134,7 +134,6 @@ void copy(double* x, double* y, int size)
 
 void readMatrix()
 {
-    MPI_Status status;
     if (my_rank == 0)
 	{
         int index;
@@ -188,6 +187,7 @@ void readMatrix()
 	}
 	else
 	{
+		MPI_Status status;
 		MPI_Recv(local_A, block_dim, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD, &status);
 		MPI_Recv(local_B, block_dim, MPI_DOUBLE, 0, 2, MPI_COMM_WORLD, &status);
 	}

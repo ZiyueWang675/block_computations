@@ -10,17 +10,23 @@
 using namespace std;
 
 int dimension;
-matrix_t* matrix_A;
-matrix_t* matrix_B;
-matrix_t* matrix_C;
+matrix_t *matrixC;
+struct timeval t1, t2;
+double *local_A, * local_B, *local_C, *tempA, *tempB;
+float start;
+int my_rank, processors;
+int local_stripes;
+int arr_size;
+int original_distribution;
 
 
 void Usage(char prog_name[]);
 
-void readMatrix(
-      int dimension      /* in  */,
-      matrix_t* matrix_A /* out */,
-      matrix_t* matrix_B /* out */);
+void copy(double* x, double* y, int size);
+
+void readMatrix();
+
+void block_striped();
 
 void Get_args(
       char*    argv[]      /* in  */,
@@ -30,114 +36,198 @@ int main(int argc, char* argv[])
 {
     if (argc != 2) Usage(argv[0]); 
     Get_args(argv, &dimension);
-    matrix_A = make_matrix(dimension,dimension);
-    matrix_B = make_matrix(dimension,dimension);
-    matrix_C = make_matrix(dimension,dimension); 
-    readMatrix(dimension, matrix_A, matrix_B);
-    set_zero(matrix_C);
-    //for timer
-    struct timeval t1, t2;
+    
     gettimeofday(&t1, NULL);
     
     /* Start up MPI */
     MPI_Init(NULL, NULL);
     /* Get the number of processes */
-    int my_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &my_size); 
-
+    MPI_Comm_size(MPI_COMM_WORLD, &processors); 
     /* Get my rank among all the processes */
-    int my_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank); 
 
-    int local_stripes = 1;
-    int row_number = 0;
-    local_stripes = (my_rank!=my_size-1) ? (dimension/my_size) : (dimension-(dimension/my_size)*(my_size - 1));
+    if(processors > dimension)
+    {
+        if(my_rank == 0)
+            printf("Processor number should be either smaller than or equal to dimension!\n");
 
-    //Threads start to work!
-    for(int i = 0; i < local_stripes; i++){
-        row_number = (dimension/my_size)*my_rank + i;
-        for(int k = 0; k < dimension; k++){
-            for(int j = 0; j < dimension; j++){
-                element(matrix_C, row_number, j) += element(matrix_A, row_number, k) * element(matrix_B, k, j);
-            }
-        }
+        MPI_Finalize();
+		return 0;
     }
 
-    //make a local array for MPI send
-    int size_tmp = 0;
-    if(my_rank != my_size-1){
-        size_tmp = (dimension / my_size) * dimension;
-    }else{
-        size_tmp = (dimension - (dimension / my_size) * (my_size - 1))* dimension;
-    }
-    int my_result[size_tmp];
+    if(dimension % processors != 0)
+    {
+        if(my_rank == 0)
+            printf("Dimension should be divisible by processor number!\n");
 
-    int col_num = 0;
-    int temp = (dimension / my_size) * my_rank;
-    for (int i = 0; i < size_tmp; i++){
-        my_result[i] = element(matrix_C,temp,col_num);
-        col_num += 1;
-        if(col_num == dimension){
-            temp += 1;
-            col_num = 0;
-        }
+        MPI_Finalize();
+		return 0;
     }
+
+    MPI_Barrier(MPI_COMM_WORLD);
+    start = MPI_Wtime();
+    local_stripes = (my_rank!=processors-1) ? (dimension/processors) : (dimension-(dimension/processors)*(processors - 1));
     
-    // for other processes, send their result of matrix C to process 0
-    if (my_rank != 0){
-        MPI_Send(my_result, size_tmp, MPI_INT, 0, 0, MPI_COMM_WORLD);    
-        
+    matrixC = make_matrix(dimension,dimension); 
+    arr_size = (dimension % processors ==0) ? local_stripes * dimension : (dimension-(dimension/processors)*(processors - 1))*dimension;
+    local_A = (double*) malloc(arr_size * sizeof(double));
+    local_B = (double*) malloc(arr_size * sizeof(double));
+    local_C = (double*) malloc(arr_size * sizeof(double));
+    tempA= (double*) malloc(arr_size * sizeof(double));
+	tempB = (double*) malloc(arr_size * sizeof(double));
+    for(int i = 0; i< arr_size; i++)
+    {
+        local_C[i] = 0;
+        local_B[i] = 0;
+        local_A[i] = 0;
     }
-
-    //insert the value from other porcess to process 0
-    if(my_rank == 0){
-        int a = (dimension / my_size);
-        for (int b = 1; b < my_size-1; b+=1){
-            MPI_Recv(my_result, size_tmp, MPI_INT, b, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-            
-            int col_temp = 0;
-            for (int i = 0; i < size_tmp; i++){
-                //cout << "batman" << endl;
-                element(matrix_C,a,col_temp) = my_result[i];
-                col_temp += 1;
-                if(col_temp == dimension){
-                    a += 1;
-                    col_temp = 0;
-                }
-            }
-        }
-
-        size_tmp = (dimension - (dimension / my_size) * (my_size - 1))* dimension;
-        int my_local_result[size_tmp];
-        MPI_Recv(my_local_result, size_tmp, MPI_INT, my_size-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-
-
-        int col_temp = 0;
-        for (int i = 0; i < size_tmp; i++){
-            element(matrix_C,a,col_temp) = my_local_result[i];
-            col_temp += 1;
-            if(col_temp == dimension){
-                a += 1;
-                col_temp = 0;
-            }
-        }
-    }
-
-
-
-
-    gettimeofday(&t2, NULL);
-    double time_spend = (t2.tv_sec - t1.tv_sec)+(double)(t2.tv_usec - t1.tv_usec)/1000000.0;
+    original_distribution = my_rank;
+    
+    readMatrix();
+    
+    block_striped();
+    
     if(my_rank==0){
-        print_matrix(matrix_C);
-        printf("Time cost is %.5f for %i processors and %i dimension\n", time_spend, my_size, dimension);
+        MPI_Status status;
+	    int processor_stripes;
+	    for (int i = 0; i < local_stripes; i++)
+		    for (int j = 0; j < dimension; j++)
+            {
+			    element(matrixC,i,j) = local_C[i*dimension + j];
+            }
+	    for (int i = 1; i < processors; i++)
+	    {
+            processor_stripes = (i!=processors-1) ? (dimension/processors) : (dimension-(dimension/processors)*(processors - 1));
+		    MPI_Recv(local_C, dimension * processor_stripes, MPI_DOUBLE, i, 1, MPI_COMM_WORLD, &status);
+		    for (int j = 0; j < processor_stripes; j++)
+			    for (int k = 0; k < dimension; k++)
+				    element(matrixC,(dimension/processors)*i + j,k) = local_C[j*dimension + k];
+	    }
+        float end = MPI_Wtime();
+        float read_time = (t2.tv_sec - t1.tv_sec)+(double)(t2.tv_usec - t1.tv_usec)/1000000.0;
+        printf("Time cost is %.5f for %i processors and %i dimension\n", end-start-read_time, processors, dimension);
     }
+	else
+	{
+        
+		MPI_Send(local_C, dimension * local_stripes, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD);
+	}
     
-
+    free(local_A);
+    free(local_B);
+    free(local_C);
+    free(tempA);
+    free(tempB);
+    free_matrix(matrixC);
+    MPI_Barrier(MPI_COMM_WORLD);
     /* Shut down MPI */
     MPI_Finalize();
     return 0;
+}
+
+void readMatrix()
+{
+    if (my_rank == 0)
+	{
+        int index;
+        int processor_stripes;
+        matrix_t *matrixA, *matrixB;
+        
+        matrixA = make_matrix(dimension, dimension);
+	    matrixB = make_matrix(dimension, dimension);
+		gettimeofday(&t1, NULL);
+		string dim = to_string(dimension);
+        string filename = "matrix"+ dim + "x"+ dim + ".txt";
+        load_matrix(filename, dimension,  matrixA, matrixB);
+		gettimeofday(&t2, NULL);
+        
+        
+        //serial_matrix_multiply(matrixA, matrixB, matrixD);
+	    for (int i = 0; i < processors; i++)
+	    {
+
+            processor_stripes = (i!=processors-1) ? (dimension/processors) : (dimension-(dimension/processors)*(processors - 1));
+            if(i == 0)
+            {
+                for (int j = 0; j < processor_stripes; j++)
+                {
+		            for (int k = 0; k < dimension; k++)
+		            {
+                        index = k + j * dimension;
+                        local_A[index] = element(matrixA, (dimension/processors)*my_rank + j, k);
+                        local_B[index] = element(matrixB, k, (dimension/processors)*my_rank + j);
+		            }
+                }
+            }
+		    else
+            {
+
+                for (int j = 0; j < processor_stripes; j++)
+		        {
+                    for (int k = 0; k < dimension; k++)
+		            {
+                        index = k + j * dimension;
+                        tempA[index] = element(matrixA, (dimension/processors)*i + j, k);
+				        tempB[index] = element(matrixB, k, (dimension/processors)*i + j);
+                    }
+		        }
+			    MPI_Send(tempA, arr_size, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
+			    MPI_Send(tempB, arr_size, MPI_DOUBLE, i, 2, MPI_COMM_WORLD);
+		    }
+	    }
+        free_matrix(matrixA);
+        free_matrix(matrixB);
+
+	}
+	else
+	{
+		MPI_Status status;
+        MPI_Recv(local_A, arr_size, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD, &status);
+		MPI_Recv(local_B, arr_size, MPI_DOUBLE, 0, 2, MPI_COMM_WORLD, &status);
+	}
+    
+}
+
+void block_striped()
+{
+    MPI_Status status;
+    int processor_stripes;
+    int col_index;
+    int src, dest;
+    int local_c_stripe_pos = original_distribution;
+	for (int stage = 0; stage < processors; stage++)
+	{
+        src = (my_rank+processors*(stage+1)-stage-1)%processors;
+        dest = (my_rank+stage+1)%processors;
+        processor_stripes = (local_c_stripe_pos!=processors-1) ? (dimension/processors) : (dimension-(dimension/processors)*(processors - 1));
+		for (int i = 0; i < processor_stripes; i++)
+		{
+            for (int j = 0; j < processor_stripes; j++)
+		    {
+                col_index = dimension*i + (dimension/processors)*local_c_stripe_pos + j;
+                
+                for(int k = 0; k < dimension; k++)
+                {
+                    local_C[col_index] += local_A[dimension*i+k]*local_B[dimension*j+k];
+                }
+		    }
+        }
+        
+        //src processor number from the end of last stage
+		MPI_Sendrecv(local_B, arr_size, MPI_DOUBLE, dest, 2, tempB, arr_size, MPI_DOUBLE, src, 2, MPI_COMM_WORLD, &status);
+        MPI_Sendrecv(&local_c_stripe_pos, 1, MPI_INT, dest, 2, &original_distribution, 1, MPI_INT, src, 2, MPI_COMM_WORLD, &status);
+        local_c_stripe_pos = original_distribution;
+        copy(local_B, tempB, arr_size);
+    }
+    
+}
+
+void copy(double* x, double* y, int size)
+{
+	for(int i = 0; i< size; i++)
+	{
+		x[i] = y[i];
+	}
 }
 
 void Usage(char prog_name[])
@@ -145,13 +235,6 @@ void Usage(char prog_name[])
    fprintf(stderr, "usage: %s ", prog_name); 
    fprintf(stderr, "<matrix_dimension>\n");
    exit(0);
-}
-
-void readMatrix(int dimension, matrix_t* matrix_A, matrix_t* matrix_B)
-{
-    string dim = to_string(dimension);
-    string filename = "matrix"+ dim + "x"+ dim + ".txt";
-    load_matrix(filename, dimension,  matrix_A, matrix_B);
 }
 
 void Get_args(char* argv[], int* dimension)

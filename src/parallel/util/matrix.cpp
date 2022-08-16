@@ -5,6 +5,9 @@
 #include <assert.h>
 
 #include "matrix.hpp"
+/*
+ * Code adopted from project 0
+ */
 
 /*
  * Allocates a rows-by-cols matrix and returns it
