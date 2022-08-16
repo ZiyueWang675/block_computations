@@ -58,7 +58,7 @@ echo "MPI Cannon Program is running"
 echo "MPI Cannon Program: " >  ../output/mpi_cannon.txt
 for i in "${arr[@]}"
 do 
-    mpiexec -n 4 ./mpi_fox $i
+    mpiexec -n 4 ./mpi_cannon $i
 done >> ../output/mpi_cannon.txt
 echo "MPI Cannon Program is finished"
 
@@ -82,7 +82,7 @@ echo "MPI Cannon Program is running"
 echo "MPI Cannon Program: " >  ../output/mpi_cannon_9_processors.txt
 for i in "${arr9[@]}"
 do 
-    mpiexec -n 9 ./mpi_fox $i
+    mpiexec -n 9 ./mpi_cannon $i
 done >> ../output/mpi_cannon_9_processors.txt
 echo "MPI Cannon Program is finished"
 

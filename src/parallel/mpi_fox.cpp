@@ -13,7 +13,7 @@ matrix_t *matrixC;
 double *local_A, * local_B, *local_C, *tempA, *tempB;
 struct timeval t1, t2;
 int dimension;
-int block, block_dim;
+int block, block_number;
 int processors, sqrt_processors, my_rank;
 int row, col;
 
@@ -32,7 +32,8 @@ void readMatrix();
 
 void Usage(char prog_name[]);
 
-#define getPosition(row,col) (col + sqrt_processors) % sqrt_processors + ((row + sqrt_processors) % sqrt_processors) * sqrt_processors
+//The macro method to get the processor number based on the position of its initial block in the matrix
+#define getID(row,col) (col + sqrt_processors) % sqrt_processors + ((row + sqrt_processors) % sqrt_processors) * sqrt_processors
 
 int main(int argc, char* argv[])
 {
@@ -64,18 +65,21 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
+	//The dimension of a single block;
 	block = dimension / sqrt_processors;
-	block_dim = block * block;
+	//total elements in a block;
+	block_number = block * block;
+	//The position of the block inside the matrix is (row,col)
 	row = my_rank / sqrt_processors;
 	col = my_rank % sqrt_processors;
     matrixC = make_matrix(dimension, dimension);
-    local_A = (double*) malloc(block_dim * sizeof(double));
-    local_B = (double*) malloc(block_dim * sizeof(double));
-    local_C = (double*) malloc(block_dim * sizeof(double));
-    tempA= (double*) malloc(block_dim * sizeof(double));
-	tempB = (double*) malloc(block_dim * sizeof(double));
+    local_A = (double*) malloc(block_number * sizeof(double));
+    local_B = (double*) malloc(block_number * sizeof(double));
+    local_C = (double*) malloc(block_number * sizeof(double));
+    tempA= (double*) malloc(block_number * sizeof(double));
+	tempB = (double*) malloc(block_number * sizeof(double));
 
-	for(int i = 0; i<block_dim; i++)
+	for(int i = 0; i<block_number; i++)
     {
         local_C[i] = 0;
     }
@@ -92,7 +96,7 @@ int main(int argc, char* argv[])
 			    element(matrixC,i,j) = local_C[i * block + j];
 	    for (int i = 1; i < processors; i++)
 	    {
-		    MPI_Recv(local_C, block_dim, MPI_DOUBLE, i, 1, MPI_COMM_WORLD, &status);
+		    MPI_Recv(local_C, block_number, MPI_DOUBLE, i, 1, MPI_COMM_WORLD, &status);
 		    row_start = (i / sqrt_processors) * block;
 		    row_end = row_start + block;
 		    col_start = (i % sqrt_processors) * block;
@@ -107,7 +111,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		MPI_Send(local_C, block_dim, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD);
+		MPI_Send(local_C, block_number, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD);
 	}
 
     free_matrix(matrixC);
@@ -175,8 +179,8 @@ void readMatrix()
 				        tempB[index] = element(matrixB, j, k);
 			        }
 		        }
-			    MPI_Send(tempA, block_dim, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
-			    MPI_Send(tempB, block_dim, MPI_DOUBLE, i, 2, MPI_COMM_WORLD);
+			    MPI_Send(tempA, block_number, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
+			    MPI_Send(tempB, block_number, MPI_DOUBLE, i, 2, MPI_COMM_WORLD);
 		    }
 	    }
         free_matrix(matrixA);
@@ -185,8 +189,8 @@ void readMatrix()
 	else
 	{
 		MPI_Status status;
-		MPI_Recv(local_A, block_dim, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD, &status);
-		MPI_Recv(local_B, block_dim, MPI_DOUBLE, 0, 2, MPI_COMM_WORLD, &status);
+		MPI_Recv(local_A, block_number, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD, &status);
+		MPI_Recv(local_B, block_number, MPI_DOUBLE, 0, 2, MPI_COMM_WORLD, &status);
 	}
     
 }
@@ -194,26 +198,28 @@ void readMatrix()
 void fox()
 {
     MPI_Status status;
+	//The position of the block need to send
 	int local_col = row;
 	int pos_start, pos_end;
 	for (int stage = 0; stage < sqrt_processors; stage++)
 	{
 		if (col == local_col)
 		{
-			pos_start = getPosition(row, 0);
-			pos_end =   getPosition(row, sqrt_processors - 1);
+			pos_start = getID(row, 0);
+			pos_end =   getID(row, sqrt_processors - 1);
 			for (int i = pos_start; i <= pos_end; i++)
 			{
 				if (i == my_rank)
 					continue;
-				MPI_Send(local_A, block_dim, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
+				MPI_Send(local_A, block_number, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
 			}
-			copy(tempA, local_A, block_dim);
+			copy(tempA, local_A, block_number);
 		}
 		else
 		{
-			MPI_Recv(tempA, block_dim, MPI_DOUBLE, getPosition(row, local_col), 1, MPI_COMM_WORLD, &status);
+			MPI_Recv(tempA, block_number, MPI_DOUBLE, getID(row, local_col), 1, MPI_COMM_WORLD, &status);
 		}
+
 		local_col = (local_col + 1) % sqrt_processors;
 
 		for (int i = 0; i < block; i++)
@@ -224,8 +230,9 @@ void fox()
 					local_C[i * block + j] += tempA[i * block + k] * local_B[k * block + j];
 			}
 		}
-		MPI_Sendrecv(local_B, block_dim, MPI_DOUBLE, getPosition(row - 1, col), 2, tempB, block_dim, MPI_DOUBLE, getPosition(row + 1, col), 2, MPI_COMM_WORLD, &status);
-		copy(local_B, tempB, block_dim);
+		//Block in position (i,j) in B moved to (i - 1, j)
+		MPI_Sendrecv(local_B, block_number, MPI_DOUBLE, getID(row - 1, col), 2, tempB, block_number, MPI_DOUBLE, getID(row + 1, col), 2, MPI_COMM_WORLD, &status);
+		copy(local_B, tempB, block_number);
 	}
 }
 
