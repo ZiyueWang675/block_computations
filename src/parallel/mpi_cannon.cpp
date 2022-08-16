@@ -32,6 +32,7 @@ void readMatrix();
 
 void Usage(char prog_name[]);
 
+//The macro method to get the processor number based on the position of its initial block in the matrix
 #define getID(row,col) (col + sqrt_processors) % sqrt_processors + ((row + sqrt_processors) % sqrt_processors) * sqrt_processors
 
 int main(int argc, char* argv[])
