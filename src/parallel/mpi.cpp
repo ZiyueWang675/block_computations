@@ -16,7 +16,7 @@ double *local_A, * local_B, *local_C, *tempA, *tempB;
 float start;
 int my_rank, processors;
 int local_stripes;
-int arr_size;
+int stripe_number;
 int original_distribution;
 
 
@@ -69,17 +69,15 @@ int main(int argc, char* argv[])
     local_stripes = (my_rank!=processors-1) ? (dimension/processors) : (dimension-(dimension/processors)*(processors - 1));
     
     matrixC = make_matrix(dimension,dimension); 
-    arr_size = (dimension % processors ==0) ? local_stripes * dimension : (dimension-(dimension/processors)*(processors - 1))*dimension;
-    local_A = (double*) malloc(arr_size * sizeof(double));
-    local_B = (double*) malloc(arr_size * sizeof(double));
-    local_C = (double*) malloc(arr_size * sizeof(double));
-    tempA= (double*) malloc(arr_size * sizeof(double));
-	tempB = (double*) malloc(arr_size * sizeof(double));
-    for(int i = 0; i< arr_size; i++)
+    stripe_number = (dimension % processors ==0) ? local_stripes * dimension : (dimension-(dimension/processors)*(processors - 1))*dimension;
+    local_A = (double*) malloc(stripe_number * sizeof(double));
+    local_B = (double*) malloc(stripe_number * sizeof(double));
+    local_C = (double*) malloc(stripe_number * sizeof(double));
+    tempA= (double*) malloc(stripe_number * sizeof(double));
+	tempB = (double*) malloc(stripe_number * sizeof(double));
+    for(int i = 0; i< stripe_number; i++)
     {
         local_C[i] = 0;
-        local_B[i] = 0;
-        local_A[i] = 0;
     }
     original_distribution = my_rank;
     
@@ -171,8 +169,8 @@ void readMatrix()
 				        tempB[index] = element(matrixB, k, (dimension/processors)*i + j);
                     }
 		        }
-			    MPI_Send(tempA, arr_size, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
-			    MPI_Send(tempB, arr_size, MPI_DOUBLE, i, 2, MPI_COMM_WORLD);
+			    MPI_Send(tempA, stripe_number, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
+			    MPI_Send(tempB, stripe_number, MPI_DOUBLE, i, 2, MPI_COMM_WORLD);
 		    }
 	    }
         free_matrix(matrixA);
@@ -182,8 +180,8 @@ void readMatrix()
 	else
 	{
 		MPI_Status status;
-        MPI_Recv(local_A, arr_size, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD, &status);
-		MPI_Recv(local_B, arr_size, MPI_DOUBLE, 0, 2, MPI_COMM_WORLD, &status);
+        MPI_Recv(local_A, stripe_number, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD, &status);
+		MPI_Recv(local_B, stripe_number, MPI_DOUBLE, 0, 2, MPI_COMM_WORLD, &status);
 	}
     
 }
@@ -214,10 +212,10 @@ void block_striped()
         }
         
         //src processor number from the end of last stage
-		MPI_Sendrecv(local_B, arr_size, MPI_DOUBLE, dest, 2, tempB, arr_size, MPI_DOUBLE, src, 2, MPI_COMM_WORLD, &status);
+		MPI_Sendrecv(local_B, stripe_number, MPI_DOUBLE, dest, 2, tempB, stripe_number, MPI_DOUBLE, src, 2, MPI_COMM_WORLD, &status);
         MPI_Sendrecv(&local_c_stripe_pos, 1, MPI_INT, dest, 2, &original_distribution, 1, MPI_INT, src, 2, MPI_COMM_WORLD, &status);
         local_c_stripe_pos = original_distribution;
-        copy(local_B, tempB, arr_size);
+        copy(local_B, tempB, stripe_number);
     }
     
 }

@@ -1,7 +1,7 @@
 MPI Cannon Program: 
-Time cost is 0.29413 for 9 processors and 900 dimension
-Time cost is 2.69195 for 9 processors and 1800 dimension
-Time cost is 14.63443 for 9 processors and 2700 dimension
-Time cost is 30.85439 for 9 processors and 3600 dimension
-Time cost is 73.71436 for 9 processors and 4500 dimension
-Time cost is 219.52759 for 9 processors and 6300 dimension
+Time cost is 0.40394 for 9 processors and 900 dimension
+Time cost is 1.03091 for 9 processors and 1800 dimension
+Time cost is 11.18417 for 9 processors and 2700 dimension
+Time cost is 26.97167 for 9 processors and 3600 dimension
+Time cost is 66.09261 for 9 processors and 4500 dimension
+Time cost is 202.54559 for 9 processors and 6300 dimension
