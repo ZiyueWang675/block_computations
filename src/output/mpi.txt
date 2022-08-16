@@ -1,22 +1,28 @@
 MPI Program: 
-------------
-  1.5706e+06    1.79216e+06    900618    1.3837e+06  
-  1.26745e+06    1.5674e+06    636877    1.36448e+06  
-  1.88504e+06    2.20095e+06    1.05449e+06    2.03802e+06  
-  1.4352e+06    1.85622e+06    814352    1.78237e+06  
-------------
-Time cost is 0.21644 for 2 processors and 4 dimension
-------------
-  1.5706e+06    1.79216e+06    900618    1.3837e+06  
-  1.26745e+06    1.5674e+06    636877    1.36448e+06  
-  1.88504e+06    2.20095e+06    1.05449e+06    2.03802e+06  
-  1.4352e+06    1.85622e+06    814352    1.78237e+06  
-------------
-Time cost is 0.21866 for 3 processors and 4 dimension
-------------
-  1.5706e+06    1.79216e+06    900618    1.3837e+06  
-  1.26745e+06    1.5674e+06    636877    1.36448e+06  
-  1.88504e+06    2.20095e+06    1.05449e+06    2.03802e+06  
-  1.4352e+06    1.85622e+06    814352    1.78237e+06  
-------------
-Time cost is 0.21739 for 4 processors and 4 dimension
+Time cost is 0.00001 for 2 processors and 4 dimension
+Time cost is 0.00002 for 4 processors and 4 dimension
+Processor number should be either smaller than or equal to dimension!
+Time cost is 0.00003 for 2 processors and 16 dimension
+Time cost is 0.00003 for 4 processors and 16 dimension
+Time cost is 0.00014 for 8 processors and 16 dimension
+Time cost is 0.00007 for 2 processors and 32 dimension
+Time cost is 0.00006 for 4 processors and 32 dimension
+Time cost is 0.00025 for 8 processors and 32 dimension
+Time cost is 0.00032 for 2 processors and 64 dimension
+Time cost is 0.00022 for 4 processors and 64 dimension
+Time cost is 0.00029 for 8 processors and 64 dimension
+Time cost is 0.00248 for 2 processors and 128 dimension
+Time cost is 0.00122 for 4 processors and 128 dimension
+Time cost is 0.00079 for 8 processors and 128 dimension
+Time cost is 0.01677 for 2 processors and 256 dimension
+Time cost is 0.00875 for 4 processors and 256 dimension
+Time cost is 0.00496 for 8 processors and 256 dimension
+Time cost is 0.11908 for 2 processors and 512 dimension
+Time cost is 0.08436 for 4 processors and 512 dimension
+Time cost is 0.05274 for 8 processors and 512 dimension
+Time cost is 0.98001 for 2 processors and 1024 dimension
+Time cost is 0.55829 for 4 processors and 1024 dimension
+Time cost is 0.36869 for 8 processors and 1024 dimension
+Time cost is 7.71620 for 2 processors and 2048 dimension
+Time cost is 4.78534 for 4 processors and 2048 dimension
+Time cost is 2.74004 for 8 processors and 2048 dimension

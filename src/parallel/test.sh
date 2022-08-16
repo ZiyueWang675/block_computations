@@ -42,7 +42,7 @@ echo "MPI Program is running"
 echo "MPI Program: " > ../output/mpi.txt
 for i in "${arr[@]}"
 do 
-    for j in {2..10}
+    for j in 2 4 8
     do
         mpiexec -n $j ./mpi $i
     done

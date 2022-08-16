@@ -18,6 +18,10 @@
 #include <math.h>
 #include <assert.h>
 
+/*
+ * Code adopted from project 0
+ */
+
 /**
  *  A matrix_t stores a matrix with all its elements
  *  in a single one-dimensional vector in memory, in
