@@ -8,3 +8,4 @@ Time cost is 0.01096 for 4 processors and 256 dimension
 Time cost is 0.08831 for 4 processors and 512 dimension
 Time cost is 0.95188 for 4 processors and 1024 dimension
 Time cost is 12.93554 for 4 processors and 2048 dimension
+Time cost is 407.38544 for 4 processors and 4096 dimension
