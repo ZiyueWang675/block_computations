@@ -1,0 +1,7 @@
+MPI Program: 
+Time cost is 0.25229 for 9 processors and 900 dimension
+Time cost is 1.65577 for 9 processors and 1800 dimension
+Time cost is 5.60802 for 9 processors and 2700 dimension
+Time cost is 12.65161 for 9 processors and 3600 dimension
+Time cost is 24.88569 for 9 processors and 4500 dimension
+Time cost is 66.69946 for 9 processors and 6300 dimension

@@ -35,7 +35,6 @@ int main(int argc, char* argv[])
     gettimeofday(&t2, NULL);
     double time_spend = (t2.tv_sec - t1.tv_sec)+(double)(t2.tv_usec - t1.tv_usec)/1000000.0;
     printf("Time cost is %.5f for dimension %i\n", time_spend, dimension);
-    print_matrix(matrix_C);
     free_matrix(matrix_A);
     free_matrix(matrix_B);
     free_matrix(matrix_C);

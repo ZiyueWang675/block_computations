@@ -1,11 +1,11 @@
 MPI Fox Program: 
-Time cost is 0.00004 for 4 processors and 4 dimension
-Time cost is 0.00007 for 4 processors and 16 dimension
-Time cost is 0.00010 for 4 processors and 32 dimension
-Time cost is 0.00025 for 4 processors and 64 dimension
-Time cost is 0.00142 for 4 processors and 128 dimension
-Time cost is 0.01096 for 4 processors and 256 dimension
-Time cost is 0.08831 for 4 processors and 512 dimension
-Time cost is 0.95188 for 4 processors and 1024 dimension
-Time cost is 12.93554 for 4 processors and 2048 dimension
-Time cost is 407.38544 for 4 processors and 4096 dimension
+Time cost is 0.00005 for 4 processors and 4 dimension
+Time cost is 0.00016 for 4 processors and 16 dimension
+Time cost is 0.00005 for 4 processors and 32 dimension
+Time cost is 0.00027 for 4 processors and 64 dimension
+Time cost is 0.00138 for 4 processors and 128 dimension
+Time cost is 0.01022 for 4 processors and 256 dimension
+Time cost is 0.08537 for 4 processors and 512 dimension
+Time cost is 0.97894 for 4 processors and 1024 dimension
+Time cost is 12.14892 for 4 processors and 2048 dimension
+Time cost is 260.56104 for 4 processors and 4096 dimension
