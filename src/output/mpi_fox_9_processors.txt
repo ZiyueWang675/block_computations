@@ -1,0 +1,7 @@
+MPI Fox Program: 
+Time cost is 0.31336 for 9 processors and 900 dimension
+Time cost is 2.51417 for 9 processors and 1800 dimension
+Time cost is 12.86380 for 9 processors and 2700 dimension
+Time cost is 28.02235 for 9 processors and 3600 dimension
+Time cost is 69.37957 for 9 processors and 4500 dimension
+Time cost is 220.79799 for 9 processors and 6300 dimension
