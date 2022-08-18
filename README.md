@@ -2,10 +2,10 @@
 
 
 ## Introduction
-* We implemented block striped decomposition method using pthread, OpenMP and MPI.
-* We also implemented Fox's and Cannon's algorithm for MPI.
+* We implemented block striped decomposition method using Pthreads, OpenMP and MPI.
+* We also implemented Fox's algorithm and Cannon's algorithm using MPI.
 * Test results are in the folder ``src/output``.
-* Graphs of the results are in the folder ``graph``.
+* Graphs of the test results are in the folder ``graph``.
 
 
 ## Generate new n dimension matrix
@@ -18,4 +18,4 @@
 ## Run test
 * In the folder ``src/parallel``, see what ``test.sh`` does
 * Modify ``test.sh`` so that you can include new matrices as input
-* Then run ``bash test.sh``
+* Then run ``bash test.sh`` and the results should be generated in the folder ``src/output``
