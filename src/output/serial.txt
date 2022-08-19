@@ -1,10 +1,16 @@
 Serial Program: 
-Time cost is 0.00000 for dimension 4
 Time cost is 0.00001 for dimension 16
-Time cost is 0.00009 for dimension 32
-Time cost is 0.00073 for dimension 64
-Time cost is 0.00676 for dimension 128
-Time cost is 0.05474 for dimension 256
-Time cost is 1.17049 for dimension 512
-Time cost is 11.66951 for dimension 1024
-Time cost is 151.20353 for dimension 2048
+Time cost is 0.00014 for dimension 32
+Time cost is 0.00077 for dimension 64
+Time cost is 0.00545 for dimension 128
+Time cost is 0.04430 for dimension 256
+Time cost is 0.33965 for dimension 512
+Time cost is 2.69817 for dimension 1024
+Time cost is 21.20495 for dimension 2048
+Time cost is 167.44887 for dimension 4096
+Time cost is 1.79224 for dimension 900
+Time cost is 14.50927 for dimension 1800
+Time cost is 48.00381 for dimension 2700
+Time cost is 113.37216 for dimension 3600
+Time cost is 219.11902 for dimension 4500
+Time cost is 597.36755 for dimension 6300
