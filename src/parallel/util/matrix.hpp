@@ -7,16 +7,16 @@
 
 #define _MATRIX_H
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <assert.h>
 #include <fcntl.h>
 #include <math.h>
-#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 /*
  * Code adopted from project 0
@@ -33,7 +33,7 @@
  *  Ordinarily this is equal to the number of rows;
  *  colstride will be used when we start breaking matrices
  *  up into blocks.  The BLAS library calls this "lda".
- *  
+ *
  *  The macro "element(X,i,j)" expands to a pointer to
  *  the element X(i,j) in storage.
  *
@@ -41,15 +41,15 @@
  *  A matrix_t doesn't have to be square.
  */
 typedef struct {
-  int rows;          // number of rows
-  int cols;          // number of columns
-  int colstride;     // distance between column starts
-  double *values;    // elements in column major order
+  int rows;       // number of rows
+  int cols;       // number of columns
+  int colstride;  // distance between column starts
+  double *values; // elements in column major order
 } matrix_t;
 
-#define element(X,i,j) (X)->values[(i) + (j)*(X)->colstride]
+#define element(X, i, j) (X)->values[(i) + (j) * (X)->colstride]
 
-matrix_t * make_matrix(int rows, int cols);
+matrix_t *make_matrix(int rows, int cols);
 bool compare_matrices(matrix_t *A, matrix_t *B);
 void free_matrix(matrix_t *m);
 void print_matrix(matrix_t *m);
