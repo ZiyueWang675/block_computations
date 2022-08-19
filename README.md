@@ -28,41 +28,13 @@ block_computations
 ├─ README.md
 ├─ cpu_info.txt
 ├─ graph
-│  ├─ MPI.png
-│  ├─ MPI_9.png
-│  ├─ memory
-│  │  ├─ cannon.png
-│  │  ├─ fox.png
-│  │  └─ mpi.png
-│  ├─ speedup.png
-│  ├─ threads.png
-│  ├─ total.png
-│  └─ total_log.png
+│  ├─ <where we put our graphs for analysis>
 └─ src
    ├─ data
-   │  ├─ matrix1024x1024.txt
-   │  ├─ matrix128x128.txt
-   │  ├─ matrix16x16.txt
-   │  ├─ matrix1800x1800.txt
-   │  ├─ matrix2048x2048.txt
-   │  ├─ matrix256x256.txt
-   │  ├─ matrix2700x2700.txt
-   │  ├─ matrix32x32.txt
-   │  ├─ matrix4x4.txt
-   │  ├─ matrix512x512.txt
-   │  ├─ matrix64x64.txt
-   │  └─ matrix900x900.txt
+   │  ├─ <where we put our matrices data>
    ├─ matrix_generator.py
    ├─ output
-   │  ├─ mpi.txt
-   │  ├─ mpi_9_processors.txt
-   │  ├─ mpi_cannon.txt
-   │  ├─ mpi_cannon_9_processors.txt
-   │  ├─ mpi_fox.txt
-   │  ├─ mpi_fox_9_processors.txt
-   │  ├─ omp.txt
-   │  ├─ pthread.txt
-   │  └─ serial.txt
+   │  ├─ <where we put our test results>
    └─ parallel
       ├─ makefile
       ├─ mpi.cpp
