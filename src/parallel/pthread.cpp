@@ -117,10 +117,11 @@ void *thread_work(void *rank) {
   // 1));
 
   // Threads start to work!
-  for (int i = 0; i < local_stripes; i++) {
-    row_number = (dimension / thread_count) * my_rank + i;
-    for (int j = 0; j < dimension; j++) {
-      for (int k = 0; k < dimension; k++) {
+
+  for (int j = 0; j < dimension; j++) {
+    for (int k = 0; k < dimension; k++) {
+      for (int i = 0; i < local_stripes; i++) {
+        row_number = (dimension / thread_count) * my_rank + i;
         element(matrix_C, row_number, j) +=
             element(matrix_A, row_number, k) * element(matrix_B, k, j);
       }
