@@ -183,8 +183,8 @@ void cannon() {
   MPI_Status status;
 
   // initial send
-  // Block in position (i,j) in A moved to (i, j-i), Block in position (i,j) in
-  // B moved to (i - j, j)
+  // Block in position (i,j) in A moved to (i, j+i), Block in position (i,j) in
+  // B moved to (i + j, j)
   MPI_Sendrecv(local_A, block_number, MPI_DOUBLE, getID(row, col - row), 1,
                tempA, block_number, MPI_DOUBLE, getID(row, col + row), 1,
                MPI_COMM_WORLD, &status);
@@ -202,8 +202,8 @@ void cannon() {
               local_A[i * block + k] * local_B[k * block + j];
       }
     }
-    // Block in position (i,j) in A moved to (i, j - 1), Block in position (i,j)
-    // in B moved to (i - 1, j)
+    // Block in position (i,j) in A moved to (i, j + 1), Block in position (i,j)
+    // in B moved to (i + 1, j)
     MPI_Sendrecv(local_A, block_number, MPI_DOUBLE, getID(row, col - 1), 1,
                  tempA, block_number, MPI_DOUBLE, getID(row, col + 1), 1,
                  MPI_COMM_WORLD, &status);
