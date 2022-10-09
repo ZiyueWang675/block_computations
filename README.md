@@ -1,4 +1,4 @@
-# Matrix multiplication using block computations
+# Block computations algorithm analysis
 
 ## Introduction
 
